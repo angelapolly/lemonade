@@ -17,9 +17,12 @@ package com.example.lemonade
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
+
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        logging()
 
         // === DO NOT ALTER THE CODE IN THE FOLLOWING IF STATEMENT ===
         if (savedInstanceState != null) {
@@ -92,36 +96,26 @@ class MainActivity : AppCompatActivity() {
      * This method determines the state and proceeds with the correct action.
      */
     private fun clickLemonImage() {
+
+        val lemonTreeOne = LemonTree()
+
             if (lemonadeState == SELECT) {
                 lemonadeState = SQUEEZE
-                lemonSize = lemonTree.pick()
+                lemonSize = lemonTreeOne.pick()
                 squeezeCount = 0
             } else if (lemonadeState == SQUEEZE && lemonSize != 0) {
                 squeezeCount++
                 lemonSize--
-            } else if (lemonadeState == SQUEEZE && lemonSize == 0) {
-                lemonadeState == DRINK
+            } else if (lemonSize == 0) {
+                lemonadeState = DRINK
                 lemonSize = -1
             } else if (lemonadeState == DRINK) {
-                lemonadeState == RESTART
+                lemonadeState = RESTART
             } else if (lemonadeState == RESTART) {
-                lemonadeState == SELECT
+                lemonadeState = SELECT
             }
 
             setViewElements()
-//        //Find the imageView in the layout
-//        val lemonImageState: ImageView = findViewById(R.id.image_lemon_state);
-//
-//        val drawableResource = when (lemonadeState) {
-//            SELECT -> R.drawable.lemon_tree
-//            SQUEEZE -> R.drawable.lemon_squeeze
-//            DRINK -> R.drawable.lemon_drink
-//            RESTART -> R.drawable.lemon_restart
-//            else -> R.drawable.lemon_tree
-//        }
-//
-//        // Update the ImageView with the correct drawable resource ID
-//        lemonImageState.setImageResource(drawableResource)
 
         // TODO: use a conditional statement like 'if' or 'when' to track the lemonadeState
         //  when the image is clicked we may need to change state to the next step in the
@@ -149,7 +143,6 @@ class MainActivity : AppCompatActivity() {
      * Set up the view elements according to the state.
      */
     private fun setViewElements() {
-        val textAction: TextView = findViewById(R.id.text_action)
         // TODO: set up a conditional that tracks the lemonadeState
 
         // TODO: for each state, the textAction TextView should be set to the corresponding string from
@@ -158,6 +151,28 @@ class MainActivity : AppCompatActivity() {
         // TODO: Additionally, for each state, the lemonImage should be set to the corresponding
         //  drawable from the drawable resources. The drawables have the same names as the strings
         //  but remember that they are drawables, not strings.
+
+        val textAction: TextView = findViewById(R.id.text_action)
+
+        val textResource = when (lemonadeState) {
+            SELECT -> R.string.lemon_select
+            SQUEEZE -> R.string.lemon_squeeze
+            DRINK -> R.string.lemon_drink
+            RESTART -> R.string.lemon_empty_glass
+            else -> R.string.lemon_select
+        }
+
+        textAction.setText(textResource)
+
+        val drawableResource = when (lemonadeState) {
+            SELECT -> R.drawable.lemon_tree
+            SQUEEZE -> R.drawable.lemon_squeeze
+            DRINK -> R.drawable.lemon_drink
+            RESTART -> R.drawable.lemon_restart
+            else -> R.drawable.lemon_tree
+        }
+        // Update the ImageView with the correct drawable resource ID
+        lemonImage?.setImageResource(drawableResource)
     }
 
     /**
@@ -177,6 +192,15 @@ class MainActivity : AppCompatActivity() {
         ).show()
         return true
     }
+
+    fun logging() {
+        Log.e(TAG, "ERROR: a serious error like an app crash")
+        Log.w(TAG, "WARN: warns about the potential for serious errors")
+        Log.i(TAG, "INFO: reporting technical information, such as an operation succeeding")
+        Log.d(TAG, "DEBUG: reporting technical information useful for debugging")
+        Log.v(TAG, "VERBOSE: more verbose than DEBUG logs")
+    }
+
 }
 
 /**
